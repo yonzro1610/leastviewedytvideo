@@ -1,7 +1,3 @@
-from colorama import just_fix_windows_console
-import yt_dlp
-import json
-
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -13,3 +9,8 @@ class color:
    BOLD = '\033[1m'
    UNDERLINE = '\033[4m'
    END = '\033[0m'
+   
+from colorama import just_fix_windows_console
+just_fix_windows_console()
+
+print(color.BOLD + color.BLUE + 'Hello, World!' + color.END)
