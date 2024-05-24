@@ -42,7 +42,7 @@ def scrapeVideos(channel_url):
             raise Exception("Failed to retrieve channel videos")
         
         videos = []
-        for entry in info['entries']:
+        for i, entry in enumerate(info['entries']):
             video_info = ydl.extract_info(entry['url'], download=False)
             video_data = {
                 'title': video_info['title'],
@@ -50,7 +50,7 @@ def scrapeVideos(channel_url):
                 'views': video_info.get('view_count', 'N/A')
             }
             videos.append(video_data)
-            print(video_data)
+            print(i + 1)
         
         return videos
 
