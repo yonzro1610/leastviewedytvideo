@@ -2,6 +2,7 @@
 from colorama import just_fix_windows_console
 import yt_dlp
 import json
+import time
 import re
 import os
 
@@ -23,45 +24,46 @@ just_fix_windows_console()
 os.system('cls'); os.system('title YCLVV')
 
 # Get URL
-providedLink = input(f"{color.BLUE}{color.UNDERLINE}Enter Channel URL > ")
+providedLink = input(f"{color.BLUE}Enter Channel URL > {color.UNDERLINE}"); print(color.END)
+print(f"{color.BLUE}")
 
 # Functions
-def scrapeVideos(url):
+def scrapeVideos(channel_url):
     ydl_opts = {
-        'extract_flat': True,
-        'skip_download': True,
-        'quiet': True
+        'quiet': True,
+        'extract_flat': True,  # Do not download the videos
+        'force_generic_extractor': True
     }
     
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        result = ydl.extract_info(channel_url, download=False)
-    
-    videos = []
-    
-    if 'entries' in result:
-        for entry in result['entries']:
-            if 'url' in entry:
-                vurl = entry['url']
-                vinfo = ydl.extract_info(vurl, download=False)
-                vdetails = {
-                    'title': vinfo.get('title'),
-                    'views': vinfo.get('views'),
-                    'url': vurl,
-                    'upload_date': vinfo.get('upload_date')
-                }
-                videos.append(vdetails)
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(channel_url, download=False)
+        
+        if 'entries' not in info:
+            raise Exception("Failed to retrieve channel videos")
+        
+        videos = []
+        for entry in info['entries']:
+            video_info = ydl.extract_info(entry['url'], download=False)
+            video_data = {
+                'title': video_info['title'],
+                'url': video_info['webpage_url'],
+                'views': video_info.get('view_count', 'N/A')
+            }
+            videos.append(video_data)
+            print(video_data)
         
         return videos
-    else:
-        print("This channe has no videos.")
 
 # Validate URL
 regex = re.compile(r"https:\/\/www\.youtube\.com\/channel\/\S+")
 valid = regex.match(providedLink)
 if valid:
-    print("Link valid!")
-    
+    os.system('cls')
+    print("Link valid! Scraping beginning...")
+    time.sleep(1)
+    os.system('cls')
+    vids = scrapeVideos(providedLink)
 else:
     print("Invalid link.")
-
+    
 print(color.END)
