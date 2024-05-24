@@ -8,5 +8,8 @@
   "keywords": [],
   "author": "yonzro1610",
   "license": "GPL-3.0-only",
-  "description": "Tool to fetch any channels least viewed video."
+  "description": "Tool to fetch any channels least viewed video.",
+  "dependencies": {
+    "got": "^14.3.0"
+  }
 }
