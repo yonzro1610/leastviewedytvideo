@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { exec } = require('child_process');
 
 process.stdin.setEncoding('utf8');
 
@@ -24,5 +25,5 @@ process.stdin.on('data', function(data) {
             console.log('Data has been written to', file);
         }
     });
-
+    process.exit()
 });

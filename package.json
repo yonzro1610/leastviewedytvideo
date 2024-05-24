@@ -10,6 +10,7 @@
   "license": "GPL-3.0-only",
   "description": "Tool to fetch any channels least viewed video.",
   "dependencies": {
+    "child_process": "^1.0.2",
     "got": "^14.3.0"
   }
 }
