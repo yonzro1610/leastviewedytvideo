@@ -31,38 +31,46 @@ print(f"{color.BLUE}")
 def scrapeVideos(channel_url):
     ydl_opts = {
         'quiet': True,
-        'extract_flat': True,  # Do not download the videos
-        'force_generic_extractor': True
+        'force_generic_extractor': False
     }
+    
+    videos = []
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(channel_url, download=False)
-        
+            
         if 'entries' not in info:
             raise Exception("Failed to retrieve channel videos")
-        
-        videos = []
-        for i, entry in enumerate(info['entries']):
-            video_info = ydl.extract_info(entry['url'], download=False)
-            video_data = {
-                'title': video_info['title'],
-                'url': video_info['webpage_url'],
-                'views': video_info.get('view_count', 'N/A')
-            }
-            videos.append(video_data)
-            print(i + 1)
-        
-        return videos
+            
+        video_urls = [entry.get('webpage_url') for entry in info['entries'] if entry.get('webpage_url')]
+            
+        all_videos_info = []
+        for video_url in video_urls:
+            video_info = ydl.extract_info(video_url, download=False)
+            all_videos_info.append(video_info)
+
+        # Now, all_videos_info contains information for all videos
+        index = 0
+        for video_info in all_videos_info:
+            index = index + 1
+            if video_info:
+                video_data = {
+                    'title': video_info['title'],
+                    'url': video_info['webpage_url'],
+                    'views': video_info.get('view_count', 'N/A')
+                }
+                print(f"Video Scraped: {video_data['title']} | Index {index}")
+                videos.append(video_data)
 
 # Validate URL
 regex = re.compile(r"https:\/\/www\.youtube\.com\/channel\/\S+")
 valid = regex.match(providedLink)
 if valid:
     os.system('cls')
-    print("Link valid! Scraping beginning...")
+    print("Valid link! Starting scraping process...")
     time.sleep(1)
-    os.system('cls')
-    vids = scrapeVideos(providedLink)
+    print("This will take a while.")
+    vids = scrapeVideos()
 else:
     print("Invalid link.")
     
