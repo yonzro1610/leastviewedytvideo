@@ -61,6 +61,7 @@ def scrapeVideos(channel_url):
                 }
                 print(f"Video Scraped: {video_data['title']} | Index {index}")
                 videos.append(video_data)
+                return videos
 
 # Validate URL
 regex = re.compile(r"https:\/\/www\.youtube\.com\/channel\/\S+")
@@ -69,8 +70,21 @@ if valid:
     os.system('cls')
     print("Valid link! Starting scraping process...")
     time.sleep(1)
+    os.system('cls')
     print("This will take a while.")
-    vids = scrapeVideos()
+    vids = scrapeVideos(providedLink)
+    time.sleep(0.3)
+    print("Scraping done! Sorting by views...")
+    LOWEST = 99999999999999999999999999999999999
+    for vid in vids:
+        if vid['views'] <= LOWEST:
+            LOWEST = vid['views']
+    
+    for vid in vids:
+        if vid['views'] == LOWEST:
+            os.system('cls')
+            print(f"Least viewed video on channel found. ({vid['views']} views)")
+            print(f"Title: {vid['title']}\nURL: {vid['url']}")
 else:
     print("Invalid link.")
     
